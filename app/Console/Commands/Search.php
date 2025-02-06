@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Pages;
 use Illuminate\Console\Command;
-use App\Scraper\WebScraper;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Search extends Command
@@ -35,22 +34,18 @@ class Search extends Command
         $this->info("List of relevance pages:");
 
         print_r($result);
-//        foreach ($result as $page) {
-//        }
     }
 
-    function searchPageContent(string $usrSearch)
+    function searchPageContent(string $usrSearch): Collection
     {//DB::raw()
-        $results = DB::table('pages')
+        return DB::table('pages')
             ->select('URL_Path', DB::raw("MATCH(Plain_Text) AGAINST ('$usrSearch' IN NATURAL LANGUAGE MODE) AS relevance"))
             ->whereRaw("MATCH(Plain_Text) AGAINST (? IN NATURAL LANGUAGE MODE)", [$usrSearch])
             ->orderByDesc('relevance')
             ->get();
-        return $results;
     }
 
 }
-//SQLSTATE[HY093]: Invalid parameter number (Connection: mysql, SQL: select `URL_Path`, MATCH(Plain_Text) AGAINST (????? ????? IN NATURAL LANGUAGE MODE) AS relevance from `pages` where MATCH(Plain_Text) AGAINST (? IN NATURAL LANGUAGE MODE) order by `relevance` desc)
 //SELECT URL_Path,
 //       (MATCH(Plain_Text) AGAINST (:searchTerm IN NATURAL LANGUAGE MODE)) AS relevance
 //    FROM Pages

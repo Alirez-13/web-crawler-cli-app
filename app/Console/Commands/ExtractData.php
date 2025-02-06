@@ -36,7 +36,6 @@ class ExtractData extends Command
             $this->output->progressStart(100);
 
             for ($i = 0; $i < 100; $i++) {
-                usleep(50000);
                 $this->output->progressAdvance();
             }
 
@@ -55,7 +54,7 @@ class ExtractData extends Command
 
     }
 
-function extractMainPageData()
+function extractMainPageData(): false|string
 {
     $url = 'https://www.entekhab.ir';
 
